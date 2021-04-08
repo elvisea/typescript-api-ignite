@@ -1,18 +1,20 @@
-// import { ICategoriesRepository } from "../../repositories/ICategoriesRepository";
+import csvParse from "csv-parse";
+import fs from "fs";
 
 // Todo UseCase deverá ter apenas um Controller
 class ImportCategoryUseCase {
-  execute(file: any) {
-    console.log("====================================");
-    console.log("file =>", file);
-    console.log("====================================");
-    // const categoryAlreadyExists = this.categoriesRepository.findByName(name);
+  execute(file: Express.Multer.File): void {
+    // Cria Stream do arquivo
+    const stream = fs.createReadStream(file.path);
 
-    // if (categoryAlreadyExists) {
-    //   throw new Error("Category Already Exists");
-    // }
+    // Responsavel por ler as linhas do arquivo
+    const parseFile = csvParse();
 
-    // this.categoriesRepository.create({ name, description });
+    stream.pipe(parseFile);
+
+    parseFile.on("data", async (line) => {
+      console.log("line=>", line);
+    });
   }
 }
 
